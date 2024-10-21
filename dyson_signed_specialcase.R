@@ -73,18 +73,18 @@ is_forward = function (ptrinary) {
 ## Supporting functions for the algorithm
 ##
 
-#' Get the forward representation of `ncoins` coins to `ndigit` digits.
+#'  Get the forward representation of the maximum possible number of coins, to `ndigit` digits.
 #'
-#' Gets the forward representations of the integers 1:ncoins. If the
+#' Gets the forward representations of the integers 1:M, where `M = (3^ndigits - 3)/2`. If the
 #' representation of the integer `k` does not rotate forward, then the representation
 #' of `-k` does. We'll say that if a representation does not rotate forward, then it
 #' rotates.backwards.
 #'
-#' @param ncoins the maximum integer to be converted
 #' @param ndigits the number of digits in the trinary representation
 #' @returns a matrix `Fmat` of dimensions `ncoins` x `ndigits` such that `Fmat[i, ]` represents `i`
 #'
-get_forward_representation = function(ncoins, ndigits) {
+get_forward_representation = function(ndigits) {
+  ncoins = (3^ndigits - 3)/2
   Fmat = matrix(0, nrow=ncoins, ncol=ndigits)
   for(i in 1:ncoins) {
     trin = to_signed_trinary(i, ndigits)
@@ -97,12 +97,6 @@ get_forward_representation = function(ncoins, ndigits) {
 }
 
 
-# Compile the sets of coins in each position for each weighing
-# C is a list of length nrounds
-# Each element of C is a data frame with columns (left, table, right)
-# Each column is the vector of indices for the coins in that position
-#
-# Fmat: the matrix of forward representations of the coins
 
 #' Calculate the positions of each coin for each weighing
 #'
@@ -142,7 +136,7 @@ compileC = function(Fmat) {
 
 #' "Public" function to precompile what's needed for solving the `ncoins` in `nrounds` problem.
 #'
-#' @param ncoins The number of coins to weight
+#' @param ncoins The number of coins to weigh
 #' @param nrounds The number of weighings to do
 #' @returns a list `Cset` that describes the coin weighing schedule.
 #'
@@ -153,7 +147,7 @@ precompile = function(ncoins, nrounds) {
   if(ncoins!=M_max) stop("I've only implemented ncoins==M_max; sorry.")
 
   # encode the coins
-  Fmat = get_forward_representation(ncoins, nrounds)
+  Fmat = get_forward_representation(nrounds)
   # calculate the coin partitioning schedule
   Cset = compileC(Fmat)
 
@@ -162,9 +156,9 @@ precompile = function(ncoins, nrounds) {
 
 
 
-#' Weigh a vector of coins according to the weighting schedule
+#' Weigh a vector of coins according to the weighing schedule
 #'
-#' `coins` is a vector of coin weights, where at most one coin weights
+#' `coins` is a vector of coin weights, where at most one coin weighs
 #' differently than the others (the "dud"). The outcome of each weighing
 #' is the pan that was heavier (if any):
 #'
