@@ -213,7 +213,7 @@ do_weighings = function(coins, Cset) {
 #'
 #' @param coins the vector of coin weights
 #' @param Cset the precompiled weighing schedule
-#' @returns an integer `A` whose magnitude gives the dud location, and whose sign designates the relative weight.
+#' @returns an integer whose magnitude gives the dud location, and whose sign designates the relative weight.
 #' `A=0` means there is no dud.
 #'
 find_dud = function(coins, Cset) {
